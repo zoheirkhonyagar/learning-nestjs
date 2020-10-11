@@ -1,28 +1,25 @@
+import * as Joi from 'joi';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoffeesModule } from './coffees/coffees.module';
 import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
-import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
+import appConfig from './config/app.config';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    CoffeesModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'pass123',
-      database: 'postgres',
-      autoLoadEntities: true,
-      // synchronize: true,
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        DATABASE_URL: Joi.required(),
+      }),
+      load: [appConfig],
     }),
+    MongooseModule.forRoot(process.env.DATABASE_URL),
+    CoffeesModule,
     CoffeeRatingModule,
-    DatabaseModule,
+    // DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

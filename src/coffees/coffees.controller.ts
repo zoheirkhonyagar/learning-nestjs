@@ -19,29 +19,30 @@ export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
 
   @Get()
-  findAll(@Query() paginationQuery: PaginationQueryDto) {
-    // const { limit, offset } = paginationQuery;
+  findAll(@Query() paginationQuery: PaginationQueryDto): Promise<Coffee[]> {
     return this.coffeesService.findAll(paginationQuery);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<Coffee> {
     return this.coffeesService.findOne(id);
   }
 
   @Post()
-  create(@Body() createCoffeeDto: CreateCoffeeDto) {
+  create(@Body() createCoffeeDto: CreateCoffeeDto): Promise<Coffee> {
     return this.coffeesService.create(createCoffeeDto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateCoffeeDto: UpdateCoffeeDto) {
-    console.log(typeof id);
-    return this.coffeesService.update('' + id, updateCoffeeDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateCoffeeDto: UpdateCoffeeDto,
+  ): Promise<Coffee> {
+    return this.coffeesService.update(id, updateCoffeeDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
+  delete(@Param('id') id: string): Promise<Coffee> {
     return this.coffeesService.remove(id);
   }
 }
